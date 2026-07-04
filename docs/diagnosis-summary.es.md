@@ -57,6 +57,22 @@ Esta persistencia todavía no está comprendida. Podría depender del estado del
 
 En esta etapa debe documentarse solo como observación preliminar, no como comportamiento garantizado.
 
+## Observación sobre espacio de color / gamut
+
+Una observación posterior sugiere que el comando exitoso está vinculado con la ruta interna de imagen/color del monitor.
+
+Cuando el espacio de color del OSD estaba configurado en **DCI-P3**, aplicar:
+
+```powershell
+ControlMyMonitor.exe /SetValue <monitor> DC 0
+```
+
+devolvió el monitor a espacio de color **Nativo**.
+
+Esto sugiere que `VCP DC = 0` podría ser más que un reset estrecho del red tint. Podría forzar al firmware del monitor a recargar o reiniciar la aplicación de pantalla activa, incluyendo el estado de espacio de color/gamut. Una hipótesis posible es que el problema de red tint esté relacionado con un estado interno de espacio de color/gamut atascado, corrupto o incorrectamente aplicado.
+
+Hasta ahora esto solo se ha observado con DCI-P3 -> Nativo. Falta probar por separado el comportamiento con Adobe RGB y sRGB.
+
 ## Herramientas usadas
 
 - Windows PowerShell.
@@ -131,6 +147,8 @@ VCP DC / Display Application = 0
 
 Corrigió el red tint sin cambiar brillo, fuente de entrada, modo de energía ni contraste.
 
+Una comprobación posterior mostró que este mismo comando puede devolver el espacio de color del OSD desde DCI-P3 a Nativo en la unidad probada. Por lo tanto, quienes usen intencionalmente DCI-P3 deberían revisar el ajuste de espacio de color del OSD después de ejecutar el script.
+
 ## Recomendación final
 
 Usar únicamente:
@@ -150,4 +168,7 @@ Evitar automatizar la fuente de entrada, el modo de energía u otros valores esp
 - ¿El workaround se comporta igual cuando el monitor no está conectado a un notebook o no está configurado como pantalla principal de Windows?
 - ¿Por qué el estado corregido puede persistir durante varios ciclos de apagado y encendido después de aplicar el comando DDC/CI, cuando la corrección manual anterior parecía no sobrevivir un nuevo encendido del monitor?
 - ¿Por qué el estado corregido puede sobrevivir algunos ciclos de standby/recuperación causados por timeout de señal?
-- ¿La persistencia depende del firmware del monitor, del estado del OSD, del estado DDC/CI, del comportamiento frente a pérdida y recuperación de señal o del comportamiento de Windows/GPU?
+- ¿`VCP DC = 0` siempre devuelve DCI-P3 a Nativo, o solo bajo ciertos estados?
+- ¿Qué ocurre si el espacio de color activo del OSD es Adobe RGB o sRGB antes de aplicar el comando?
+- ¿El problema de red tint se debe a un estado interno de espacio de color/gamut atascado o incorrectamente aplicado?
+- ¿La persistencia depende del firmware del monitor, del estado del OSD, del estado DDC/CI, del comportamiento frente a pérdida y recuperación de señal, del estado de color o del comportamiento de Windows/GPU?
