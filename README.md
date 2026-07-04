@@ -27,7 +27,9 @@ This was tested in a very specific environment:
 
 No exhaustive testing has been performed with HDR on, FreeSync on, local dimming on, different refresh rates, different GPU drivers, different cables, different connection setups, desktop PCs, or additional units of the same monitor.
 
-There is also an unexpected observation: in the normal behavior of the red tint issue, the tint tended to reappear after a monitor power-off/power-on cycle. There did not appear to be a manual correction that survived a new monitor power cycle. After applying this DDC/CI reset, however, the corrected state may sometimes persist across several monitor power-off/power-on cycles, meaning the red tint does not necessarily return every time the monitor is turned off and on. This behavior has not been characterized yet. It should be treated as preliminary and requiring further testing.
+There is also an unexpected observation: in the normal behavior of the red tint issue, the tint tended to reappear after a monitor power-off/power-on cycle. There did not appear to be a manual correction that survived a new monitor power cycle. After applying this DDC/CI reset, however, the corrected state may sometimes persist across several monitor power-off/power-on cycles, meaning the red tint does not necessarily return every time the monitor is turned off and on.
+
+A related preliminary observation is that the corrected state also appears to survive at least some standby/resume cycles. For example, if the computer is turned off or stops sending signal and the monitor enters standby by signal timeout, the image may still remain corrected when signal returns after the computer is turned on again. This behavior has not been characterized yet. It should be treated as preliminary and requiring further testing.
 
 ## What this does
 
@@ -95,7 +97,8 @@ The investigation found that:
 - toggling `VCP 10 / Brightness` between the ECO and Normal brightness values did not fix it;
 - the OSD preview/hover workaround corrected the image without exposing a persistent DDC/CI value difference;
 - explicitly reapplying `VCP DC / Display Application = 0` corrected the red tint;
-- unlike the earlier observed behavior, where the red tint tended to return after a monitor power cycle, the DDC/CI reset may sometimes survive several monitor off/on cycles.
+- unlike the earlier observed behavior, where the red tint tended to return after a monitor power cycle, the DDC/CI reset may sometimes survive several monitor off/on cycles;
+- the corrected state may also survive some standby/resume cycles triggered by signal timeout.
 
 See [`docs/diagnosis-summary.md`](docs/diagnosis-summary.md) for details. Spanish version: [`docs/diagnosis-summary.es.md`](docs/diagnosis-summary.es.md).
 
