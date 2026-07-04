@@ -1,0 +1,13 @@
+# Local diagnostic outputs
+*.csv
+monitors.txt
+ddc-diagnostico*/
+ddc-redtint-tests*/
+
+# Local copies of external tools
+ControlMyMonitor.exe
+ControlMyMonitor.cfg
+
+# Windows noise
+Thumbs.db
+Desktop.ini
