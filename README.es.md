@@ -31,6 +31,14 @@ También existe una observación inesperada: en el funcionamiento normal del pro
 
 Una observación preliminar relacionada es que el estado corregido también parece sobrevivir al menos algunos ciclos de standby y recuperación. Por ejemplo, si el computador se apaga o deja de enviar señal y el monitor entra en standby por timeout de señal, la imagen puede mantenerse corregida cuando vuelve la señal al encender nuevamente el computador. Ese comportamiento no está caracterizado todavía. Debe tratarse como una observación preliminar que requiere más pruebas.
 
+## Observación sobre espacio de color
+
+Una observación posterior sugiere que `VCP DC = 0` está relacionado con la ruta interna de imagen/color del monitor, no solo con un reset invisible del red tint.
+
+En la unidad probada, cuando el espacio de color del OSD estaba configurado en **DCI-P3**, ejecutar el script devolvió el monitor a **Nativo**. Esto hace plausible que el problema de red tint esté vinculado con un estado de espacio de color/gamut mal aplicado o atascado, y que reaplicar `VCP DC = 0` fuerce al firmware del monitor a recargar o reiniciar esa parte de la ruta de procesamiento de imagen.
+
+Hasta ahora esto solo se ha observado con DCI-P3 -> Nativo. Falta probar por separado el comportamiento con Adobe RGB y sRGB.
+
 ## Qué hace
 
 El script principal envía este comando DDC/CI al monitor objetivo:
@@ -38,6 +46,10 @@ El script principal envía este comando DDC/CI al monitor objetivo:
 ```powershell
 ControlMyMonitor.exe /SetValue <monitor> DC 0
 ```
+
+Efecto secundario observado en la unidad probada:
+
+- puede devolver el espacio de color/gamut del OSD del monitor a **Nativo**.
 
 No cambia:
 
@@ -97,6 +109,7 @@ La investigación encontró que:
 - alternar `VCP 10 / Brightness` entre los valores de brillo de ECO y Normal no lo corrigió;
 - el workaround de preview/hover en el OSD corrigió la imagen sin exponer una diferencia DDC/CI persistente;
 - reaplicar explícitamente `VCP DC / Display Application = 0` corrigió el tinte rojo;
+- cuando el espacio de color del OSD estaba en DCI-P3, aplicar `VCP DC = 0` lo devolvió a Nativo;
 - a diferencia del comportamiento antes observado, en que el red tint tendía a volver después de un ciclo de apagado/encendido del monitor, el reset por DDC/CI puede a veces sobrevivir varios ciclos de apagado/encendido;
 - el estado corregido también puede sobrevivir algunos ciclos de standby/recuperación causados por timeout de señal.
 
