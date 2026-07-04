@@ -51,7 +51,9 @@ Antes de este workaround DDC/CI, el red tint tendía a reaparecer después de un
 
 Después de aplicar el reset por DDC/CI, sin embargo, el estado corregido puede a veces mantenerse activo durante varios ciclos de apagado y encendido del monitor. Esto significa que el red tint no necesariamente vuelve cada vez que el monitor se apaga y se vuelve a encender después de aplicar el comando DDC/CI.
 
-Esta persistencia todavía no está comprendida. Podría depender del estado del firmware del monitor, del estado del OSD, de algún caché de estado DDC/CI, del estado de energía o de otra condición interna. Requiere pruebas controladas adicionales.
+Una observación preliminar relacionada es que el estado corregido también parece sobrevivir al menos algunos ciclos de standby y recuperación. Por ejemplo, cuando el computador se apaga o deja de enviar señal y el monitor entra en standby después de un timeout de señal, la imagen puede mantenerse corregida cuando vuelve la señal al encender nuevamente el computador.
+
+Esta persistencia todavía no está comprendida. Podría depender del estado del firmware del monitor, del estado del OSD, de algún caché de estado DDC/CI, del comportamiento frente a pérdida y recuperación de señal, del estado de energía o de otra condición interna. Requiere pruebas controladas adicionales.
 
 En esta etapa debe documentarse solo como observación preliminar, no como comportamiento garantizado.
 
@@ -147,4 +149,5 @@ Evitar automatizar la fuente de entrada, el modo de energía u otros valores esp
 - ¿El workaround se comporta igual con tasas de refresco superiores a 60 Hz?
 - ¿El workaround se comporta igual cuando el monitor no está conectado a un notebook o no está configurado como pantalla principal de Windows?
 - ¿Por qué el estado corregido puede persistir durante varios ciclos de apagado y encendido después de aplicar el comando DDC/CI, cuando la corrección manual anterior parecía no sobrevivir un nuevo encendido del monitor?
-- ¿La persistencia depende del firmware del monitor, del estado del OSD, del estado DDC/CI o del comportamiento de Windows/GPU?
+- ¿Por qué el estado corregido puede sobrevivir algunos ciclos de standby/recuperación causados por timeout de señal?
+- ¿La persistencia depende del firmware del monitor, del estado del OSD, del estado DDC/CI, del comportamiento frente a pérdida y recuperación de señal o del comportamiento de Windows/GPU?
