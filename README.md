@@ -35,9 +35,23 @@ A related preliminary observation is that the corrected state also appears to su
 
 A later observation suggests that `VCP DC = 0` is related to the monitor's internal picture/color pipeline, not only to an invisible red tint reset.
 
-On the tested unit, when the monitor OSD color space was set to **DCI-P3**, running the script returned the monitor to **Native** color space. This makes it plausible that the red tint issue is connected to a stale or incorrectly applied color-space/gamut state, and that reapplying `VCP DC = 0` forces the monitor firmware to reload or reset that part of the image processing path.
+On the tested unit, when the monitor OSD color space was set to **DCI-P3**, running the reset script returned the monitor to **Native** color space. This makes it plausible that the red tint issue is connected to a stale or incorrectly applied color-space/gamut state, and that reapplying `VCP DC = 0` forces the monitor firmware to reload or reset that part of the image processing path.
 
-This has only been observed with DCI-P3 -> Native so far. Adobe RGB and sRGB behavior still need separate testing.
+A read-only manual color-space capture was later performed by changing only the OSD color space step by step: Native, Adobe RGB, DCI-P3 and sRGB. In the VCP values common to all four captures, the only stable value change was:
+
+```text
+VCP 0C / Color Temperature Request
+Native   = 1
+Adobe RGB = 2
+DCI-P3   = 2
+sRGB     = 2
+```
+
+During that same manual test, `VCP DC / Display Application` remained `0`, and `VCP 14 / Select Color Preset` remained `5` across all four OSD color spaces. Brightness, input source and power mode also remained stable.
+
+This suggests that the detailed OSD color-space choices are not exposed as one clean standard VCP value through ControlMyMonitor. Native leaves a visible trace through `VCP 0C = 1`, while Adobe RGB, DCI-P3 and sRGB share `VCP 0C = 2`; the finer distinction between those non-Native modes may be handled internally by the monitor firmware or through manufacturer-specific state.
+
+A subjective visual note from the same investigation: on a white background, changing the OSD color space may make the red tint appear again, while the manual OSD workaround appears to correct the tint while preserving the selected color space as reported by the OSD. This is still an observation, not a controlled measurement.
 
 ## What this does
 
@@ -101,6 +115,22 @@ scripts\Reset-Xiaomi-RedTint.bat
 
 Edit the `MONITOR_ID` variable in that file if needed.
 
+## Read-only color-space capture script
+
+A tested read-only helper script is included at:
+
+```text
+scripts\Capture-Manual-ColorSpace-Changes-WAIT.ps1
+```
+
+It does not write monitor values. It guides the user through manual OSD color-space changes and captures all readable VCP values after each step.
+
+Example:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\scripts\Capture-Manual-ColorSpace-Changes-WAIT.ps1" -Monitor "Primary"
+```
+
 ## Diagnostic notes
 
 The investigation found that:
@@ -110,6 +140,8 @@ The investigation found that:
 - the OSD preview/hover workaround corrected the image without exposing a persistent DDC/CI value difference;
 - explicitly reapplying `VCP DC / Display Application = 0` corrected the red tint;
 - when the OSD color space was set to DCI-P3, applying `VCP DC = 0` returned it to Native;
+- manual OSD color-space changes did not change `VCP DC`, which stayed at `0`;
+- the only stable common VCP value change across Native, Adobe RGB, DCI-P3 and sRGB was `VCP 0C`: Native = `1`, non-Native modes = `2`;
 - unlike the earlier observed behavior, where the red tint tended to return after a monitor power cycle, the DDC/CI reset may sometimes survive several monitor off/on cycles;
 - the corrected state may also survive some standby/resume cycles triggered by signal timeout.
 
