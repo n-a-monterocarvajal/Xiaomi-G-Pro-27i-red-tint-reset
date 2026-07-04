@@ -3,6 +3,9 @@
 monitors.txt
 ddc-diagnostico*/
 ddc-redtint-tests*/
+manual-color-space-captures*/
+scripts/manual-color-space-captures*/
+scripts/test-results*/
 
 # Local copies of external tools
 ControlMyMonitor.exe
