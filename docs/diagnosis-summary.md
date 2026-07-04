@@ -33,7 +33,11 @@ Therefore, this should be treated as a working finding for one observed environm
 
 ## Unexpected persistence observation
 
-One unexpected behavior was observed after applying the DDC/CI reset: the corrected state may sometimes remain active across several monitor power-off/power-on cycles.
+One unexpected behavior was observed after applying the DDC/CI reset.
+
+Before this DDC/CI workaround, the red tint tended to reappear after a monitor power-off/power-on cycle. In other words, the manual OSD workaround did not appear to produce a correction that survived a new monitor power cycle; the red tint would normally be present again on a fresh monitor power-on.
+
+After applying the DDC/CI reset, however, the corrected state may sometimes remain active across several monitor power-off/power-on cycles. This means the red tint does not necessarily return every time the monitor is turned off and on after the DDC/CI command has been applied.
 
 This persistence is not yet understood. It may depend on monitor firmware state, OSD state, DDC/CI state caching, power state, or another internal condition. It needs further controlled testing.
 
@@ -129,5 +133,5 @@ Avoid automating input source, power mode, or other manufacturer-specific values
 - Does the workaround still work with FreeSync enabled?
 - Does the workaround still work with local dimming enabled?
 - Does the workaround behave the same at refresh rates above 60 Hz?
-- Why does the corrected state sometimes persist across several monitor power cycles?
+- Why does the corrected state sometimes persist across several monitor power cycles after applying the DDC/CI command, when the earlier/manual correction appeared not to survive a fresh monitor power-on?
 - Is the persistence controlled by monitor firmware state, OSD state, DDC/CI state, or Windows/GPU behavior?
