@@ -57,6 +57,22 @@ This persistence is not yet understood. It may depend on monitor firmware state,
 
 At this stage, it should be documented only as a preliminary observation, not as guaranteed behavior.
 
+## Color space / gamut observation
+
+A later observation suggests that the successful command is linked to the monitor's internal picture/color pipeline.
+
+When the monitor OSD color space was set to **DCI-P3**, applying:
+
+```powershell
+ControlMyMonitor.exe /SetValue <monitor> DC 0
+```
+
+returned the monitor to **Native** color space.
+
+This suggests that `VCP DC = 0` may be more than a narrow red tint reset. It may force the monitor firmware to reload or reset the active display application, including the color-space/gamut state. A possible hypothesis is that the red tint issue is related to a stale, corrupted, or incorrectly applied internal color-space/gamut state.
+
+This has only been observed with DCI-P3 -> Native so far. Adobe RGB and sRGB behavior still need separate testing.
+
 ## Tools used
 
 - Windows PowerShell.
@@ -131,6 +147,8 @@ VCP DC / Display Application = 0
 
 It corrected the red tint without changing brightness, input source, power mode, or contrast.
 
+A later check found that this same command can reset the monitor OSD color space from DCI-P3 to Native on the tested unit. This means users who intentionally work in DCI-P3 may need to re-check the OSD color-space setting after running the script.
+
 ## Final recommendation
 
 Use only:
@@ -150,4 +168,7 @@ Avoid automating input source, power mode, or other manufacturer-specific values
 - Does the workaround behave the same when the monitor is not connected to a laptop or is not set as the primary Windows display?
 - Why does the corrected state sometimes persist across several monitor power cycles after applying the DDC/CI command, when the earlier/manual correction appeared not to survive a fresh monitor power-on?
 - Why does the corrected state sometimes survive standby/resume cycles triggered by signal timeout?
-- Is the persistence controlled by monitor firmware state, OSD state, DDC/CI state, signal loss/recovery behavior, or Windows/GPU behavior?
+- Does `VCP DC = 0` always reset DCI-P3 to Native, or only under some states?
+- What happens if the active OSD color space is Adobe RGB or sRGB before applying the command?
+- Is the red tint issue caused by a stale or incorrectly applied internal color-space/gamut state?
+- Is the persistence controlled by monitor firmware state, OSD state, DDC/CI state, signal loss/recovery behavior, color-space state, or Windows/GPU behavior?
