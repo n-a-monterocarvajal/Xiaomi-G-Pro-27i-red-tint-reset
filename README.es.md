@@ -17,13 +17,15 @@ Esto reproduce el efecto correctivo observado al abrir el OSD del monitor, pasar
 Esto fue probado en un ambiente muy específico:
 
 - una unidad del Xiaomi Mini LED Gaming Monitor G Pro 27i;
+- usado como monitor externo conectado a un notebook;
+- configurado como pantalla principal de Windows;
 - HDR apagado;
 - FreeSync apagado;
 - local dimming apagado;
 - tasa de refresco de 60 Hz;
 - Windows con acceso DDC/CI mediante ControlMyMonitor.
 
-No se han hecho pruebas exhaustivas con HDR encendido, FreeSync encendido, local dimming encendido, otras tasas de refresco, otros drivers de GPU, otros cables ni otras unidades del mismo monitor.
+No se han hecho pruebas exhaustivas con HDR encendido, FreeSync encendido, local dimming encendido, otras tasas de refresco, otros drivers de GPU, otros cables, otras configuraciones de conexión, computadores de escritorio ni otras unidades del mismo monitor.
 
 También existe una observación inesperada: en el funcionamiento normal del problema, el red tint tendía a reaparecer después de un ciclo de apagado y encendido del monitor. No parecía haber una corrección manual que resistiera un nuevo encendido del monitor. Sin embargo, después de aplicar este reset por DDC/CI, el estado corregido puede persistir durante varios ciclos de apagado y encendido, es decir, el red tint no necesariamente vuelve cada vez que el monitor se apaga y se vuelve a encender. Ese comportamiento no está caracterizado todavía. Debe tratarse como una observación preliminar que requiere más pruebas.
 
@@ -47,9 +49,10 @@ No cambia:
 ## Requisitos
 
 - Windows.
-- DDC/CI activado en el OSD del monitor.
 - [ControlMyMonitor](https://www.nirsoft.net/utils/control_my_monitor.html), de NirSoft.
-- El monitor Xiaomi externo debe ser accesible mediante DDC/CI.
+- El monitor Xiaomi debe ser alcanzable mediante DDC/CI.
+
+En el monitor probado no se encontró una opción del OSD para activar o desactivar DDC/CI. En esta configuración, DDC/CI parece ser el comportamiento por defecto del monitor, no una opción visible para el usuario.
 
 ## Uso rápido
 
@@ -94,7 +97,7 @@ La investigación encontró que:
 - reaplicar explícitamente `VCP DC / Display Application = 0` corrigió el tinte rojo;
 - a diferencia del comportamiento antes observado, en que el red tint tendía a volver después de un ciclo de apagado/encendido del monitor, el reset por DDC/CI puede a veces sobrevivir varios ciclos de apagado/encendido.
 
-Más detalles en [`docs/diagnosis-summary.md`](docs/diagnosis-summary.md).
+Más detalles en [`docs/diagnosis-summary.md`](docs/diagnosis-summary.md). Versión en español: [`docs/diagnosis-summary.es.md`](docs/diagnosis-summary.es.md).
 
 ## Nota de privacidad
 
