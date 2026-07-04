@@ -25,7 +25,7 @@ Esto fue probado en un ambiente muy específico:
 
 No se han hecho pruebas exhaustivas con HDR encendido, FreeSync encendido, local dimming encendido, otras tasas de refresco, otros drivers de GPU, otros cables ni otras unidades del mismo monitor.
 
-También existe una observación inesperada: después de aplicar el reset por DDC/CI, el estado corregido puede quedar guardado durante varios ciclos de apagado y encendido del monitor. Ese comportamiento no está caracterizado todavía. Debe tratarse como una observación preliminar que requiere más pruebas.
+También existe una observación inesperada: en el funcionamiento normal del problema, el red tint tendía a reaparecer después de un ciclo de apagado y encendido del monitor. No parecía haber una corrección manual que resistiera un nuevo encendido del monitor. Sin embargo, después de aplicar este reset por DDC/CI, el estado corregido puede persistir durante varios ciclos de apagado y encendido, es decir, el red tint no necesariamente vuelve cada vez que el monitor se apaga y se vuelve a encender. Ese comportamiento no está caracterizado todavía. Debe tratarse como una observación preliminar que requiere más pruebas.
 
 ## Qué hace
 
@@ -91,7 +91,8 @@ La investigación encontró que:
 - forzar `VCP 12 / Contrast = 50` no corrigió el tinte rojo;
 - alternar `VCP 10 / Brightness` entre los valores de brillo de ECO y Normal no lo corrigió;
 - el workaround de preview/hover en el OSD corrigió la imagen sin exponer una diferencia DDC/CI persistente;
-- reaplicar explícitamente `VCP DC / Display Application = 0` corrigió el tinte rojo.
+- reaplicar explícitamente `VCP DC / Display Application = 0` corrigió el tinte rojo;
+- a diferencia del comportamiento antes observado, en que el red tint tendía a volver después de un ciclo de apagado/encendido del monitor, el reset por DDC/CI puede a veces sobrevivir varios ciclos de apagado/encendido.
 
 Más detalles en [`docs/diagnosis-summary.md`](docs/diagnosis-summary.md).
 
