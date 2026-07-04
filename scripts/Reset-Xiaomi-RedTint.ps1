@@ -26,6 +26,8 @@ if (-not $Quiet) {
     Write-Host ""
     Write-Host "Applying VCP DC / Display Application = 0..."
     Write-Host ""
+    Write-Host "Note: on the tested unit, this command may reset the monitor OSD color space/gamut selection to Native." -ForegroundColor Yellow
+    Write-Host ""
 }
 
 & $ControlMyMonitor /SetValue $Monitor DC 0
