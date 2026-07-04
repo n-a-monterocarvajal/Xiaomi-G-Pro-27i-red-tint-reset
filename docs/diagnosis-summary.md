@@ -51,7 +51,9 @@ Before this DDC/CI workaround, the red tint tended to reappear after a monitor p
 
 After applying the DDC/CI reset, however, the corrected state may sometimes remain active across several monitor power-off/power-on cycles. This means the red tint does not necessarily return every time the monitor is turned off and on after the DDC/CI command has been applied.
 
-This persistence is not yet understood. It may depend on monitor firmware state, OSD state, DDC/CI state caching, power state, or another internal condition. It needs further controlled testing.
+A related preliminary observation is that the corrected state also appears to survive at least some standby/resume cycles. For example, when the computer is turned off or stops sending signal and the monitor enters standby after a signal timeout, the image may still remain corrected when signal returns after the computer is turned on again.
+
+This persistence is not yet understood. It may depend on monitor firmware state, OSD state, DDC/CI state caching, signal loss/recovery behavior, power state, or another internal condition. It needs further controlled testing.
 
 At this stage, it should be documented only as a preliminary observation, not as guaranteed behavior.
 
@@ -147,4 +149,5 @@ Avoid automating input source, power mode, or other manufacturer-specific values
 - Does the workaround behave the same at refresh rates above 60 Hz?
 - Does the workaround behave the same when the monitor is not connected to a laptop or is not set as the primary Windows display?
 - Why does the corrected state sometimes persist across several monitor power cycles after applying the DDC/CI command, when the earlier/manual correction appeared not to survive a fresh monitor power-on?
-- Is the persistence controlled by monitor firmware state, OSD state, DDC/CI state, or Windows/GPU behavior?
+- Why does the corrected state sometimes survive standby/resume cycles triggered by signal timeout?
+- Is the persistence controlled by monitor firmware state, OSD state, DDC/CI state, signal loss/recovery behavior, or Windows/GPU behavior?
