@@ -8,6 +8,37 @@ The monitor may show a red tint after some state changes. A known manual workaro
 
 The goal was to discover whether that corrective effect could be reproduced through DDC/CI.
 
+## Test environment and limitations
+
+This result was obtained in a very specific setup:
+
+- one Xiaomi Mini LED Gaming Monitor G Pro 27i unit;
+- HDR disabled;
+- FreeSync disabled;
+- local dimming disabled;
+- 60 Hz refresh rate;
+- Windows with ControlMyMonitor used for DDC/CI commands.
+
+The following cases have not been exhaustively tested:
+
+- HDR enabled;
+- FreeSync enabled;
+- local dimming enabled;
+- refresh rates other than 60 Hz;
+- different cables or ports;
+- different GPUs or GPU drivers;
+- additional units of the same monitor.
+
+Therefore, this should be treated as a working finding for one observed environment, not as a fully generalized fix for all possible configurations.
+
+## Unexpected persistence observation
+
+One unexpected behavior was observed after applying the DDC/CI reset: the corrected state may sometimes remain active across several monitor power-off/power-on cycles.
+
+This persistence is not yet understood. It may depend on monitor firmware state, OSD state, DDC/CI state caching, power state, or another internal condition. It needs further controlled testing.
+
+At this stage, it should be documented only as a preliminary observation, not as guaranteed behavior.
+
 ## Tools used
 
 - Windows PowerShell.
@@ -91,3 +122,12 @@ VCP DC = 0
 ```
 
 Avoid automating input source, power mode, or other manufacturer-specific values unless additional testing proves they are safe.
+
+## Open questions
+
+- Does the workaround still work with HDR enabled?
+- Does the workaround still work with FreeSync enabled?
+- Does the workaround still work with local dimming enabled?
+- Does the workaround behave the same at refresh rates above 60 Hz?
+- Why does the corrected state sometimes persist across several monitor power cycles?
+- Is the persistence controlled by monitor firmware state, OSD state, DDC/CI state, or Windows/GPU behavior?
