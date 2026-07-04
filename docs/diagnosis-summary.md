@@ -1,5 +1,7 @@
 # Diagnosis summary
 
+Spanish version: [`diagnosis-summary.es.md`](diagnosis-summary.es.md).
+
 This document summarizes the investigation performed on the Xiaomi Mini LED Gaming Monitor G Pro 27i red tint issue.
 
 ## Context
@@ -13,6 +15,8 @@ The goal was to discover whether that corrective effect could be reproduced thro
 This result was obtained in a very specific setup:
 
 - one Xiaomi Mini LED Gaming Monitor G Pro 27i unit;
+- used as an external monitor connected to a laptop;
+- set as the Windows primary display;
 - HDR disabled;
 - FreeSync disabled;
 - local dimming disabled;
@@ -26,10 +30,18 @@ The following cases have not been exhaustively tested:
 - local dimming enabled;
 - refresh rates other than 60 Hz;
 - different cables or ports;
+- different connection setups;
+- desktop PCs;
 - different GPUs or GPU drivers;
 - additional units of the same monitor.
 
 Therefore, this should be treated as a working finding for one observed environment, not as a fully generalized fix for all possible configurations.
+
+## DDC/CI availability note
+
+No DDC/CI on/off toggle was found in the tested monitor OSD. In this setup, DDC/CI appears to be the monitor's default behavior rather than a user-facing OSD option.
+
+The actual requirement is that the Xiaomi monitor must be reachable over DDC/CI from Windows and ControlMyMonitor.
 
 ## Unexpected persistence observation
 
@@ -133,5 +145,6 @@ Avoid automating input source, power mode, or other manufacturer-specific values
 - Does the workaround still work with FreeSync enabled?
 - Does the workaround still work with local dimming enabled?
 - Does the workaround behave the same at refresh rates above 60 Hz?
+- Does the workaround behave the same when the monitor is not connected to a laptop or is not set as the primary Windows display?
 - Why does the corrected state sometimes persist across several monitor power cycles after applying the DDC/CI command, when the earlier/manual correction appeared not to survive a fresh monitor power-on?
 - Is the persistence controlled by monitor firmware state, OSD state, DDC/CI state, or Windows/GPU behavior?
