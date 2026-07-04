@@ -71,13 +71,49 @@ devolvió el monitor a espacio de color **Nativo**.
 
 Esto sugiere que `VCP DC = 0` podría ser más que un reset estrecho del red tint. Podría forzar al firmware del monitor a recargar o reiniciar la aplicación de pantalla activa, incluyendo el estado de espacio de color/gamut. Una hipótesis posible es que el problema de red tint esté relacionado con un estado interno de espacio de color/gamut atascado, corrupto o incorrectamente aplicado.
 
-Hasta ahora esto solo se ha observado con DCI-P3 -> Nativo. Falta probar por separado el comportamiento con Adobe RGB y sRGB.
+## Captura manual de espacios de color
+
+Luego se hizo una captura de solo lectura con cambios manuales de espacio de color desde el OSD, sin escribir ningún valor VCP. La secuencia fue:
+
+1. Nativo.
+2. Adobe RGB.
+3. DCI-P3.
+4. sRGB.
+
+Los cuatro estados fueron capturados con ControlMyMonitor después de cambiar únicamente el ajuste de espacio de color del OSD.
+
+Entre los códigos VCP presentes en las cuatro capturas, solo un valor común cambió de manera estable:
+
+```text
+VCP 0C / Color Temperature Request
+Nativo    = 1
+Adobe RGB = 2
+DCI-P3    = 2
+sRGB      = 2
+```
+
+Valores relevantes que no cambiaron entre los cuatro espacios de color capturados:
+
+```text
+VCP DC / Display Application = 0
+VCP 14 / Select Color Preset = 5
+VCP 10 / Brightness = 20
+VCP 60 / Input Select = 15
+VCP D6 / Power Mode = 1
+```
+
+Los diffs entre pares también mostraron varias diferencias de presencia/ausencia de códigos entre capturas. Esas diferencias se documentan como de menor confianza, porque las lecturas DDC/CI pueden ser inconsistentes y algunos controles pueden aparecer o desaparecer entre una lectura y otra. El hallazgo más confiable es la comparación de códigos VCP comunes a las cuatro capturas.
+
+Interpretación: el selector de espacio de color del OSD no está expuesto como un único VCP estándar y limpio. Nativo deja una huella visible como `VCP 0C = 1`, mientras que Adobe RGB, DCI-P3 y sRGB informan `VCP 0C = 2`. La distinción fina entre Adobe RGB, DCI-P3 y sRGB podría estar guardada en un estado interno del firmware o en un control específico del fabricante no expuesto por ControlMyMonitor.
+
+Nota visual subjetiva: el red tint puede ser difícil de juzgar, y los cambios se perciben mejor con fondo blanco. El usuario observó que cambiar el espacio de color desde el OSD puede hacer que el red tint parezca reaparecer. El workaround manual del OSD —hover en ECO sin seleccionarlo, luego hover en Standard/Normal y seleccionarlo— parece corregir el tinte manteniendo el espacio de color seleccionado, al menos según lo que informa el OSD.
 
 ## Herramientas usadas
 
 - Windows PowerShell.
 - NirSoft ControlMyMonitor.
 - Lecturas y escrituras VCP mediante DDC/CI.
+- `scripts/Capture-Manual-ColorSpace-Changes-WAIT.ps1` para captura manual de espacios de color, solo lectura.
 
 ## Secuencia de diagnóstico
 
@@ -149,6 +185,8 @@ Corrigió el red tint sin cambiar brillo, fuente de entrada, modo de energía ni
 
 Una comprobación posterior mostró que este mismo comando puede devolver el espacio de color del OSD desde DCI-P3 a Nativo en la unidad probada. Por lo tanto, quienes usen intencionalmente DCI-P3 deberían revisar el ajuste de espacio de color del OSD después de ejecutar el script.
 
+Sin embargo, los cambios manuales de OSD entre Nativo, Adobe RGB, DCI-P3 y sRGB no cambiaron `VCP DC`, que permaneció en `0`. Por tanto, `VCP DC = 0` no debe describirse como el selector directo de espacio de color. Es más probable que sea un reset o recarga más amplia de la aplicación de pantalla, que puede devolver indirectamente el monitor a Nativo.
+
 ## Recomendación final
 
 Usar únicamente:
@@ -159,6 +197,8 @@ VCP DC = 0
 
 Evitar automatizar la fuente de entrada, el modo de energía u otros valores específicos del fabricante, salvo que pruebas adicionales demuestren que son seguros.
 
+Si la precisión del espacio de color importa, revisar el ajuste de espacio de color del OSD después de ejecutar el reset, porque el reset puede devolver el monitor a Nativo.
+
 ## Preguntas abiertas
 
 - ¿El workaround sigue funcionando con HDR activado?
@@ -168,7 +208,7 @@ Evitar automatizar la fuente de entrada, el modo de energía u otros valores esp
 - ¿El workaround se comporta igual cuando el monitor no está conectado a un notebook o no está configurado como pantalla principal de Windows?
 - ¿Por qué el estado corregido puede persistir durante varios ciclos de apagado y encendido después de aplicar el comando DDC/CI, cuando la corrección manual anterior parecía no sobrevivir un nuevo encendido del monitor?
 - ¿Por qué el estado corregido puede sobrevivir algunos ciclos de standby/recuperación causados por timeout de señal?
-- ¿`VCP DC = 0` siempre devuelve DCI-P3 a Nativo, o solo bajo ciertos estados?
-- ¿Qué ocurre si el espacio de color activo del OSD es Adobe RGB o sRGB antes de aplicar el comando?
+- ¿Por qué `VCP DC = 0` devuelve DCI-P3 a Nativo si los cambios manuales de espacio de color del OSD no cambian `VCP DC`?
+- ¿Dónde guarda el monitor la distinción fina entre Adobe RGB, DCI-P3 y sRGB si los tres informan `VCP 0C = 2`?
 - ¿El problema de red tint se debe a un estado interno de espacio de color/gamut atascado o incorrectamente aplicado?
 - ¿La persistencia depende del firmware del monitor, del estado del OSD, del estado DDC/CI, del comportamiento frente a pérdida y recuperación de señal, del estado de color o del comportamiento de Windows/GPU?
