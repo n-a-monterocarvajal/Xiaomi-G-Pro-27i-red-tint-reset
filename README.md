@@ -2,6 +2,8 @@
 
 Small Windows script to mitigate the documented red tint issue on the **Xiaomi Mini LED Gaming Monitor G Pro 27i** by reapplying a DDC/CI display application value.
 
+Spanish version: [`README.es.md`](README.es.md).
+
 The confirmed workaround in this case is:
 
 ```text
@@ -9,6 +11,21 @@ VCP DC / Display Application = 0
 ```
 
 This reproduces the corrective effect observed when opening the monitor OSD, hovering over another picture profile such as ECO, and returning to Normal.
+
+## Important scope note
+
+This was tested in a very specific environment:
+
+- one Xiaomi Mini LED Gaming Monitor G Pro 27i unit;
+- HDR off;
+- FreeSync off;
+- local dimming off;
+- tested at 60 Hz;
+- Windows with DDC/CI access through ControlMyMonitor.
+
+No exhaustive testing has been performed with HDR on, FreeSync on, local dimming on, different refresh rates, different GPU drivers, different cables, or additional units of the same monitor.
+
+There is also an unexpected observation: after applying the DDC/CI reset, the corrected state may sometimes persist across several monitor power-off/power-on cycles. This behavior has not been characterized yet. It should be treated as preliminary and requiring further testing.
 
 ## What this does
 
