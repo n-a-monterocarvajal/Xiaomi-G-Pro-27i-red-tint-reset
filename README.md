@@ -31,6 +31,14 @@ There is also an unexpected observation: in the normal behavior of the red tint 
 
 A related preliminary observation is that the corrected state also appears to survive at least some standby/resume cycles. For example, if the computer is turned off or stops sending signal and the monitor enters standby by signal timeout, the image may still remain corrected when signal returns after the computer is turned on again. This behavior has not been characterized yet. It should be treated as preliminary and requiring further testing.
 
+## Color space observation
+
+A later observation suggests that `VCP DC = 0` is related to the monitor's internal picture/color pipeline, not only to an invisible red tint reset.
+
+On the tested unit, when the monitor OSD color space was set to **DCI-P3**, running the script returned the monitor to **Native** color space. This makes it plausible that the red tint issue is connected to a stale or incorrectly applied color-space/gamut state, and that reapplying `VCP DC = 0` forces the monitor firmware to reload or reset that part of the image processing path.
+
+This has only been observed with DCI-P3 -> Native so far. Adobe RGB and sRGB behavior still need separate testing.
+
 ## What this does
 
 The main script sends this DDC/CI command to the target monitor:
@@ -38,6 +46,10 @@ The main script sends this DDC/CI command to the target monitor:
 ```powershell
 ControlMyMonitor.exe /SetValue <monitor> DC 0
 ```
+
+Observed side effect on the tested unit:
+
+- it may reset the monitor OSD color space/gamut setting to **Native**.
 
 It does **not** change:
 
@@ -97,6 +109,7 @@ The investigation found that:
 - toggling `VCP 10 / Brightness` between the ECO and Normal brightness values did not fix it;
 - the OSD preview/hover workaround corrected the image without exposing a persistent DDC/CI value difference;
 - explicitly reapplying `VCP DC / Display Application = 0` corrected the red tint;
+- when the OSD color space was set to DCI-P3, applying `VCP DC = 0` returned it to Native;
 - unlike the earlier observed behavior, where the red tint tended to return after a monitor power cycle, the DDC/CI reset may sometimes survive several monitor off/on cycles;
 - the corrected state may also survive some standby/resume cycles triggered by signal timeout.
 
