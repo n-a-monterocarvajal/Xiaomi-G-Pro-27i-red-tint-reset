@@ -17,13 +17,15 @@ This reproduces the corrective effect observed when opening the monitor OSD, hov
 This was tested in a very specific environment:
 
 - one Xiaomi Mini LED Gaming Monitor G Pro 27i unit;
+- used as an external monitor connected to a laptop;
+- set as the Windows primary display;
 - HDR off;
 - FreeSync off;
 - local dimming off;
 - tested at 60 Hz;
 - Windows with DDC/CI access through ControlMyMonitor.
 
-No exhaustive testing has been performed with HDR on, FreeSync on, local dimming on, different refresh rates, different GPU drivers, different cables, or additional units of the same monitor.
+No exhaustive testing has been performed with HDR on, FreeSync on, local dimming on, different refresh rates, different GPU drivers, different cables, different connection setups, desktop PCs, or additional units of the same monitor.
 
 There is also an unexpected observation: in the normal behavior of the red tint issue, the tint tended to reappear after a monitor power-off/power-on cycle. There did not appear to be a manual correction that survived a new monitor power cycle. After applying this DDC/CI reset, however, the corrected state may sometimes persist across several monitor power-off/power-on cycles, meaning the red tint does not necessarily return every time the monitor is turned off and on. This behavior has not been characterized yet. It should be treated as preliminary and requiring further testing.
 
@@ -47,9 +49,10 @@ It does **not** change:
 ## Requirements
 
 - Windows.
-- DDC/CI enabled in the monitor OSD.
 - [ControlMyMonitor](https://www.nirsoft.net/utils/control_my_monitor.html) by NirSoft.
-- The external Xiaomi monitor must be reachable over DDC/CI.
+- The Xiaomi monitor must be reachable over DDC/CI.
+
+No DDC/CI on/off toggle was found in the tested monitor OSD. In this setup, DDC/CI appears to be the monitor's default behavior rather than a user-facing OSD option.
 
 ## Quick start
 
@@ -94,7 +97,7 @@ The investigation found that:
 - explicitly reapplying `VCP DC / Display Application = 0` corrected the red tint;
 - unlike the earlier observed behavior, where the red tint tended to return after a monitor power cycle, the DDC/CI reset may sometimes survive several monitor off/on cycles.
 
-See [`docs/diagnosis-summary.md`](docs/diagnosis-summary.md) for details.
+See [`docs/diagnosis-summary.md`](docs/diagnosis-summary.md) for details. Spanish version: [`docs/diagnosis-summary.es.md`](docs/diagnosis-summary.es.md).
 
 ## Privacy note
 
